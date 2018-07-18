@@ -2,6 +2,24 @@
 
 
 [[projects]]
+  name = "git.aqq.me/go/app"
+  packages = [
+    ".",
+    "appconf",
+    "applog",
+    "event",
+    "launcher"
+  ]
+  revision = "860705fc9dd584fbd739198dd908097f5dc7f101"
+  version = "v1.3.1"
+
+[[projects]]
+  name = "github.com/BurntSushi/toml"
+  packages = ["."]
+  revision = "b26d9c308763d68093482582cea63d69be07a0f0"
+  version = "v0.3.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/fiorix/go-smpp"
   packages = [
@@ -13,6 +31,12 @@
   revision = "8eb557099ddf995af5b778652b1812f1ff86889c"
 
 [[projects]]
+  name = "github.com/fsnotify/fsnotify"
+  packages = ["."]
+  revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
+  version = "v1.4.7"
+
+[[projects]]
   name = "github.com/google/gopacket"
   packages = [
     ".",
@@ -21,6 +45,65 @@
   ]
   revision = "11c65f1ca9081dfea43b4f9643f5c155583b73ba"
   version = "v1.1.14"
+
+[[projects]]
+  name = "github.com/iph0/conf"
+  packages = [
+    ".",
+    "envconf",
+    "fileconf"
+  ]
+  revision = "230a65ea17df65e10d093578fd0f085e824a3f26"
+  version = "v1.2.2"
+
+[[projects]]
+  name = "github.com/iph0/merger"
+  packages = ["."]
+  revision = "dd60b5b79edb79eab1cdefd696464a3deeb6f790"
+  version = "v1.0"
+
+[[projects]]
+  name = "github.com/kak-tus/healthcheck"
+  packages = ["."]
+  revision = "0d297236f00d42bd71b9d34e441c40fa3715a6e4"
+  version = "0.2"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
+
+[[projects]]
+  name = "go.uber.org/atomic"
+  packages = ["."]
+  revision = "1ea20fb1cbb1cc08cbd0d913a96dead89aa18289"
+  version = "v1.3.2"
+
+[[projects]]
+  name = "go.uber.org/multierr"
+  packages = ["."]
+  revision = "3c4937480c32f4c13a875a1829af76c98ca3d40a"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "go.uber.org/zap"
+  packages = [
+    ".",
+    "buffer",
+    "internal/bufferpool",
+    "internal/color",
+    "internal/exit",
+    "zapcore"
+  ]
+  revision = "eeedf312bc6c57391d84767a4cd413f02a917974"
+  version = "v1.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "ac767d655b305d4e9612f5f6e33120b9176c4ad4"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -39,9 +122,15 @@
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
+[[projects]]
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "50799605d610e060e7c90574667eaaff397199f0fd397a1e5f9c23547290487c"
+  inputs-digest = "895f0a2e20659b50f2964140a122a7ede406b1a915d63f9b7e39234f5ca5873d"
   solver-name = "gps-cdcl"
   solver-version = 1

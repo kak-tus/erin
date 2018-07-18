@@ -1,40 +1,44 @@
 package main
 
 import (
-	"bytes"
-
-	"github.com/fiorix/go-smpp/smpp/pdu"
-	"github.com/google/gopacket"
-	"github.com/google/gopacket/pcap"
+	"git.aqq.me/go/app/appconf"
+	"git.aqq.me/go/app/launcher"
+	"github.com/iph0/conf/envconf"
+	"github.com/iph0/conf/fileconf"
+	"github.com/kak-tus/erin/founder"
+	"github.com/kak-tus/healthcheck"
 )
 
-func main() {
-	hdl, err := pcap.OpenOffline("dump.pcap")
+func init() {
+	fileLdr, err := fileconf.NewLoader("etc")
 	if err != nil {
 		panic(err)
 	}
 
-	src := gopacket.NewPacketSource(hdl, hdl.LinkType())
+	envLdr := envconf.NewLoader()
 
-	for pac := range src.Packets() {
-		appl := pac.ApplicationLayer()
-		if appl == nil {
-			continue
-		}
+	appconf.RegisterLoader("file", fileLdr)
+	appconf.RegisterLoader("env", envLdr)
 
-		rdr := bytes.NewReader(appl.LayerContents())
+	appconf.Require("file:erin.yml")
+	appconf.Require("env:^ERIN_")
+}
 
-		bdy, err := pdu.Decode(rdr)
+func main() {
+	var fnd *founder.Founder
+
+	launcher.Run(func() error {
+		healthcheck.Add("/healthcheck", func() (healthcheck.State, string) {
+			return healthcheck.StatePassing, "ok"
+		})
+
+		fnd = founder.GetFounder()
+
+		err := fnd.Start()
 		if err != nil {
-			continue
+			return err
 		}
 
-		// lst := bdy.FieldList()
-		// for _, l := range lst {
-		// 	println(l)
-		// }
-
-		println(bdy.Header().ID.String())
-		println(bdy.Header().Status.Error())
-	}
+		return nil
+	})
 }
