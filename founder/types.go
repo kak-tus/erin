@@ -2,6 +2,7 @@ package founder
 
 import (
 	"github.com/fsnotify/fsnotify"
+	"github.com/kak-tus/erin/parser"
 	"go.uber.org/zap"
 )
 
@@ -14,4 +15,5 @@ type Founder struct {
 	logger  *zap.SugaredLogger
 	config  founderConfig
 	watcher *fsnotify.Watcher
+	parser  *parser.Parser
 }
