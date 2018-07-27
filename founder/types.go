@@ -8,6 +8,7 @@ import (
 
 type founderConfig struct {
 	DumpPath string
+	Pattern  string
 }
 
 // Founder hold object

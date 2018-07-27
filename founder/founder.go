@@ -1,6 +1,8 @@
 package founder
 
 import (
+	"path/filepath"
+
 	"git.aqq.me/go/app/appconf"
 	"git.aqq.me/go/app/applog"
 	"git.aqq.me/go/app/event"
@@ -58,6 +60,8 @@ func GetFounder() *Founder {
 func (f *Founder) Start() error {
 	go f.parser.Start()
 
+	f.findInitial()
+
 	go func() {
 	LOOP:
 		for {
@@ -67,7 +71,18 @@ func (f *Founder) Start() error {
 					break LOOP
 				}
 
-				f.parser.C <- ev.Name
+				if !(ev.Op == fsnotify.Create || ev.Op == fsnotify.Write) {
+					continue
+				}
+
+				match, err := filepath.Match(filepath.Join(f.config.DumpPath, f.config.Pattern), ev.Name)
+				if err != nil {
+					f.logger.Error(err)
+				}
+
+				if match {
+					f.parser.C <- ev.Name
+				}
 			case err, more := <-f.watcher.Errors:
 				if !more {
 					break LOOP
@@ -84,4 +99,16 @@ func (f *Founder) Start() error {
 	}
 
 	return nil
+}
+
+func (f *Founder) findInitial() {
+	list, err := filepath.Glob(filepath.Join(f.config.DumpPath, f.config.Pattern))
+	if err != nil {
+		f.logger.Error(err)
+		return
+	}
+
+	for _, file := range list {
+		f.parser.C <- file
+	}
 }

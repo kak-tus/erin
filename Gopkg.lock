@@ -37,6 +37,12 @@
   version = "v1.4.7"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/google/btree"
+  packages = ["."]
+  revision = "e89373fe6b4a7413d7acd6da1725b83ef713e6e4"
+
+[[projects]]
   name = "github.com/google/gopacket"
   packages = [
     ".",
@@ -73,6 +79,18 @@
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/petar/GoLLRB"
+  packages = ["llrb"]
+  revision = "53be0d36a84c2a886ca057d34b6aa4468df9ccb4"
+
+[[projects]]
+  name = "github.com/peterbourgon/diskv"
+  packages = ["."]
+  revision = "5f041e8faa004a95c88a202771f4cc3e991971e6"
+  version = "v2.0.1"
 
 [[projects]]
   name = "go.uber.org/atomic"
@@ -131,6 +149,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "895f0a2e20659b50f2964140a122a7ede406b1a915d63f9b7e39234f5ca5873d"
+  inputs-digest = "42cf1b2fc95d0d4eb0b9eb19d9438cb21e7f431e2a595a11921c541509694c9d"
   solver-name = "gps-cdcl"
   solver-version = 1

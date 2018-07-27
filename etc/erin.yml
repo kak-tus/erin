@@ -1,6 +1,11 @@
 ---
 founder:
   dumpPath: '${ERIN_DUMP_PATH}'
+  pattern: 'dump*.pcap'
+
+parser:
+  movePath: '/home/acp/qqq'
+  storePath: '/home/acp/qqq2'
 
 healthcheck:
   listen: ':9000'
