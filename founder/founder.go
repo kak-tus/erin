@@ -2,6 +2,7 @@ package founder
 
 import (
 	"path/filepath"
+	"regexp"
 
 	"git.aqq.me/go/app/appconf"
 	"git.aqq.me/go/app/applog"
@@ -34,6 +35,7 @@ func init() {
 				config:  cnf,
 				watcher: wtch,
 				parser:  parser.GetParser(),
+				regexp:  regexp.MustCompile(cnf.Regexp),
 			}
 
 			fnd.logger.Info("Started founder")
@@ -75,12 +77,12 @@ func (f *Founder) Start() error {
 					continue
 				}
 
-				match, err := filepath.Match(filepath.Join(f.config.DumpPath, f.config.Pattern), ev.Name)
+				matchPattern, err := filepath.Match(filepath.Join(f.config.DumpPath, f.config.Pattern), ev.Name)
 				if err != nil {
 					f.logger.Error(err)
 				}
 
-				if match {
+				if matchPattern && f.matchRegexp(ev.Name) {
 					f.parser.C <- ev.Name
 				}
 			case err, more := <-f.watcher.Errors:
@@ -109,6 +111,19 @@ func (f *Founder) findInitial() {
 	}
 
 	for _, file := range list {
-		f.parser.C <- file
+		if f.matchRegexp(file) {
+			f.parser.C <- file
+		}
 	}
+}
+
+// some_name_20060102_150405.pcap
+func (f *Founder) matchRegexp(file string) bool {
+	_, name := filepath.Split(file)
+
+	if len(name) <= 20 {
+		return false
+	}
+
+	return f.regexp.MatchString(name)
 }

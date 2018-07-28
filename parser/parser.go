@@ -2,10 +2,9 @@ package parser
 
 import (
 	"bytes"
-	"os"
 	"path/filepath"
+	"strconv"
 	"sync"
-	"time"
 
 	"github.com/peterbourgon/diskv"
 
@@ -76,28 +75,55 @@ func (p *Parser) Start() {
 			break
 		}
 
-		p.parse(file)
+		p.process(file)
 	}
 
 	p.m.Unlock()
 }
 
-func (p *Parser) parse(file string) {
+func (p *Parser) process(file string) {
 	p.logger.Debug(file)
 	p.toMove[file] = true
+
+	p.parse(file)
 
 	p.moveOld()
 }
 
-func (p *Parser) parse1() {
-	hdl, err := pcap.OpenOffline("dump.pcap")
+func (p *Parser) parse(file string) {
+	_, name := filepath.Split(file)
+
+	offset := 0
+
+	if p.diskv.Has(name) {
+		raw, err := p.diskv.Read(name)
+		if err != nil {
+			p.logger.Error(err)
+			return
+		}
+		offset, err = strconv.Atoi(string(raw))
+		if err != nil {
+			p.logger.Error(err)
+			return
+		}
+	}
+
+	hdl, err := pcap.OpenOffline(file)
 	if err != nil {
-		panic(err)
+		p.logger.Error(err)
+		return
 	}
 
 	src := gopacket.NewPacketSource(hdl, hdl.LinkType())
+	count := 0
 
 	for pac := range src.Packets() {
+		count++
+
+		if offset >= count {
+			continue
+		}
+
 		appl := pac.ApplicationLayer()
 		if appl == nil {
 			continue
@@ -118,31 +144,10 @@ func (p *Parser) parse1() {
 		println(bdy.Header().ID.String())
 		println(bdy.Header().Status.Error())
 	}
-}
 
-func (p *Parser) moveOld() {
-	now := time.Now()
-
-	for file := range p.toMove {
-		_, name := filepath.Split(file)
-
-		tm, err := time.ParseInLocation("dump_20060102_150405.pcap", name, time.Local)
-		if err != nil {
-			p.logger.Error(err)
-			continue
-		}
-
-		if now.Sub(tm).Hours() <= 2 {
-			continue
-		}
-
-		newPath := filepath.Join(p.config.MovePath, name)
-		err = os.Rename(file, newPath)
-		if err != nil {
-			p.logger.Error(err)
-			continue
-		}
-
-		delete(p.toMove, file)
+	err = p.diskv.Write(name, []byte(strconv.Itoa(count)))
+	if err != nil {
+		p.logger.Error(err)
+		return
 	}
 }

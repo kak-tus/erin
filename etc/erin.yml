@@ -2,6 +2,7 @@
 founder:
   dumpPath: '${ERIN_DUMP_PATH}'
   pattern: 'dump*.pcap'
+  regexp: '^\S+?_\d{8}_\d{6}.pcap$'
 
 parser:
   movePath: '/home/acp/qqq'
