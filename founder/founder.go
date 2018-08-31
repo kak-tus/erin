@@ -3,6 +3,7 @@ package founder
 import (
 	"path/filepath"
 	"regexp"
+	"sync"
 
 	"git.aqq.me/go/app/appconf"
 	"git.aqq.me/go/app/applog"
@@ -31,11 +32,12 @@ func init() {
 			}
 
 			fnd = &Founder{
-				logger:  applog.GetLogger(),
+				logger:  applog.GetLogger().Sugar(),
 				config:  cnf,
 				watcher: wtch,
 				parser:  parser.GetParser(),
 				regexp:  regexp.MustCompile(cnf.Regexp),
+				m:       &sync.Mutex{},
 			}
 
 			fnd.logger.Info("Started founder")
@@ -61,6 +63,8 @@ func GetFounder() *Founder {
 // Start find files
 func (f *Founder) Start() error {
 	go f.parser.Start()
+
+	f.m.Lock()
 
 	f.findInitial()
 
@@ -93,6 +97,8 @@ func (f *Founder) Start() error {
 				f.logger.Error(err)
 			}
 		}
+
+		f.m.Unlock()
 	}()
 
 	err := f.watcher.Add(f.config.DumpPath)
@@ -117,11 +123,11 @@ func (f *Founder) findInitial() {
 	}
 }
 
-// some_name_20060102_150405.pcap
 func (f *Founder) matchRegexp(file string) bool {
+	// dump_connectionID_20060102_150405.pcap
 	_, name := filepath.Split(file)
 
-	if len(name) <= 20 {
+	if len(name) <= 22 {
 		return false
 	}
 

@@ -2,6 +2,7 @@ package founder
 
 import (
 	"regexp"
+	"sync"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/kak-tus/erin/parser"
@@ -21,4 +22,5 @@ type Founder struct {
 	watcher *fsnotify.Watcher
 	parser  *parser.Parser
 	regexp  *regexp.Regexp
+	m       *sync.Mutex
 }

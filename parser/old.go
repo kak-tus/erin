@@ -12,7 +12,7 @@ func (p *Parser) moveOld() {
 	for file := range p.toMove {
 		_, name := filepath.Split(file)
 
-		// some_name_20060102_150405.pcap
+		// dump_connectionID_20060102_150405.pcap
 		timeFromName := name[len(name)-20 : len(name)-5]
 
 		tm, err := time.ParseInLocation("20060102_150405", timeFromName, time.Local)

@@ -2,11 +2,13 @@
 founder:
   dumpPath: '${ERIN_DUMP_PATH}'
   pattern: 'dump*.pcap'
-  regexp: '^\S+?_\d{8}_\d{6}.pcap$'
+  regexp: '^dump_\d{1,10}_\d{8}_\d{6}.pcap$'
 
 parser:
-  movePath: '/home/acp/qqq'
-  storePath: '/home/acp/qqq2'
+  movePath: '${ERIN_MOVE_PATH}'
+  storePath: '${ERIN_STORE_PATH}'
+  queueName: messages
+  maxShard: 2
 
 healthcheck:
   listen: ':9000'

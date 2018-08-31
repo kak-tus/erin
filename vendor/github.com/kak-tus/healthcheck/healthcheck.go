@@ -51,10 +51,8 @@ func init() {
 				return err
 			}
 
-			logger := applog.GetLogger()
-
 			srv = &server{
-				logger: logger,
+				logger: applog.GetLogger().Sugar(),
 				listener: &http.Server{
 					Addr: config.Listen,
 				},
@@ -63,9 +61,11 @@ func init() {
 			go func() {
 				err = srv.listener.ListenAndServe()
 				if err != nil && err != http.ErrServerClosed {
-					logger.Error(err)
+					srv.logger.Error(err)
 				}
 			}()
+
+			srv.logger.Info("Started healthcheck listener")
 
 			return nil
 		},
@@ -73,6 +73,8 @@ func init() {
 
 	event.Stop.AddHandler(
 		func() error {
+			srv.logger.Info("Stop healthcheck listener")
+
 			err := srv.listener.Shutdown(nil)
 			if err != nil {
 				return err
