@@ -12,7 +12,7 @@ func (p *Parser) moveOld() {
 	for file := range p.toMove {
 		_, name := filepath.Split(file)
 
-		// dump_connectionID_20060102_150405.pcap
+		// connectionName_connectionID_20060102_150405.pcap
 		timeFromName := name[len(name)-20 : len(name)-5]
 
 		tm, err := time.ParseInLocation("20060102_150405", timeFromName, time.Local)
@@ -25,7 +25,21 @@ func (p *Parser) moveOld() {
 			continue
 		}
 
-		newPath := filepath.Join(p.config.MovePath, name)
+		noTime := name[0 : len(name)-21]
+
+		part1 := tm.Format("20160102")
+		part2 := tm.Format("150405")
+
+		newDir := filepath.Join(p.config.MovePath, noTime, part1)
+
+		err = os.MkdirAll(newDir, 0775)
+		if err != nil {
+			p.logger.Error(err)
+			continue
+		}
+
+		newPath := filepath.Join(newDir, part2)
+
 		err = os.Rename(file, newPath)
 		if err != nil {
 			p.logger.Error(err)

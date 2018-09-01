@@ -1,8 +1,9 @@
 ---
 founder:
   dumpPath: '${ERIN_IN_DUMP_PATH}'
-  pattern: 'dump*.pcap'
-  regexp: '^dump_\d{1,10}_\d{8}_\d{6}.pcap$'
+  # connectionName_connectionID_20060102_150405.pcap
+  pattern: '*.pcap'
+  regexp: '^\S{1,100}_\d{1,10}_\d{8}_\d{6}.pcap$'
 
 parser:
   movePath: '${ERIN_OLD_MOVE_TO_PATH}'

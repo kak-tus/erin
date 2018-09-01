@@ -1,3 +1,7 @@
+v0.4.0 2018-09-01
+  - Split old files to folders.
+  - Change dump filenames.
+
 v0.3.0 2018-09-01
   - Create work dirs.
   - Renamed variables.

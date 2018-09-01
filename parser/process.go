@@ -49,8 +49,9 @@ func (p *Parser) parse(file string) {
 		}
 	}
 
-	// dump_connectionID_20060102_150405.pcap
-	str := name[strings.LastIndex(name[0:len(name)-21], "_")+1 : len(name)-21]
+	// connectionName_connectionID_20060102_150405.pcap
+	noTime := name[0 : len(name)-21]
+	str := noTime[strings.LastIndex(noTime, "_")+1:]
 	connectionID, err := strconv.Atoi(str)
 	if err != nil {
 		p.logger.Error(err)
@@ -130,7 +131,7 @@ func (p *Parser) parse(file string) {
 
 		// txt_id
 		if txt != nil {
-			sha:=sha1.Sum([]byte(txt.(string)))
+			sha := sha1.Sum([]byte(txt.(string)))
 			data[10] = string(sha[:])
 
 			dataText := make([]interface{}, 3)

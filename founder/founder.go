@@ -124,10 +124,10 @@ func (f *Founder) findInitial() {
 }
 
 func (f *Founder) matchRegexp(file string) bool {
-	// dump_connectionID_20060102_150405.pcap
+	// connectionName_connectionID_20060102_150405.pcap
 	_, name := filepath.Split(file)
 
-	if len(name) <= 22 {
+	if len(name) < 24 {
 		return false
 	}
 
