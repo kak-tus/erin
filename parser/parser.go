@@ -52,6 +52,7 @@ func init() {
 			prs.logger.Info("Stop parser")
 			close(prs.C)
 			prs.m.Lock()
+			prs.nanachi.Close()
 			return nil
 		},
 	)
@@ -66,7 +67,7 @@ func GetParser() *Parser {
 func (p *Parser) Start() {
 	client, err := nanachi.NewClient(
 		nanachi.ClientConfig{
-			URI:       "amqp://example:example@example.com:5672/example",
+			URI:       p.config.URI,
 			Heartbeat: time.Second * 15,
 			RetrierConfig: &retrier.Config{
 				RetryPolicy: []time.Duration{time.Second},
@@ -96,8 +97,17 @@ func (p *Parser) Start() {
 		},
 	}
 
+	producer := client.NewSmartProducer(
+		nanachi.SmartProducerConfig{
+			Destinations:      []*nanachi.Destination{dest},
+			Confirm:           true,
+			Mandatory:         true,
+			PendingBufferSize: 1000,
+		},
+	)
+
 	p.nanachi = client
-	p.dest = dest
+	p.producer = producer
 
 	p.m.Lock()
 

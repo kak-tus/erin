@@ -7,19 +7,21 @@ import (
 	"strconv"
 	"strings"
 
+	"git.aqq.me/go/nanachi"
 	"github.com/fiorix/go-smpp/smpp/pdu"
 	"github.com/fiorix/go-smpp/smpp/pdu/pdufield"
 	"github.com/fiorix/go-smpp/smpp/pdu/pdutext"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
 	"github.com/kak-tus/corrie/message"
+	"github.com/streadway/amqp"
 )
 
 const sql = "INSERT INTO gate.kannel " +
-	"(dt_part,dt,connection_id,operation,type,status,sequence_id,message_id,phone,short_number,txt_id)	" +
+	"(dt_part,dt,connection_id,operation,type,status,sequence_id,message_id,phone,short_number,txt_id) " +
 	"VALUES (?,?,?,?,?,?,?,?,?,?,?);"
 
-const sqlText = "INSERT INTO gate.kannel_texts (dt_part,dt,id,txt)	VALUES (?,?,?);"
+const sqlText = "INSERT INTO gate.kannel_texts (dt_part,dt,id,txt) VALUES (?,?,?);"
 
 func (p *Parser) process(file string) {
 	p.logger.Debug(file)
@@ -126,17 +128,16 @@ func (p *Parser) parse(file string) {
 
 		txt := getText(header, fields)
 
-		// txt
+		// txt_id
 		if txt != nil {
 			data[10] = sha1.Sum([]byte(txt.(string)))
 
 			dataText := make([]interface{}, 4)
 
-			// dt_part,dt,id,txt
-			dataText[0] = data[0]
-			dataText[1] = data[1]
-			dataText[2] = data[10]
-			dataText[3] = txt
+			dataText[0] = data[0]  // dt_part
+			dataText[1] = data[1]  // dt
+			dataText[2] = data[10] // id
+			dataText[3] = txt      // txt
 
 			body, err := message.Message{
 				Query: sqlText,
@@ -144,7 +145,16 @@ func (p *Parser) parse(file string) {
 			}.Encode()
 
 			if err == nil {
-				p.logger.Debug(string(body))
+				p.producer.Send(
+					nanachi.Publishing{
+						RoutingKey: p.config.QueueName,
+						Publishing: amqp.Publishing{
+							ContentType:  "text/plain",
+							Body:         body,
+							DeliveryMode: amqp.Persistent,
+						},
+					},
+				)
 			}
 		}
 
@@ -156,14 +166,23 @@ func (p *Parser) parse(file string) {
 			continue
 		}
 
-		p.logger.Debug(string(body))
+		p.producer.Send(
+			nanachi.Publishing{
+				RoutingKey: p.config.QueueName,
+				Publishing: amqp.Publishing{
+					ContentType:  "text/plain",
+					Body:         body,
+					DeliveryMode: amqp.Persistent,
+				},
+			},
+		)
 	}
 
-	// err = p.diskv.Write(name, []byte(strconv.Itoa(count)))
-	// if err != nil {
-	// 	p.logger.Error(err)
-	// 	return
-	// }
+	err = p.diskv.WriteString(name, strconv.Itoa(count))
+	if err != nil {
+		p.logger.Error(err)
+		return
+	}
 }
 
 func getText(header *pdu.Header, fields pdufield.Map) interface{} {
@@ -202,7 +221,6 @@ func getText(header *pdu.Header, fields pdufield.Map) interface{} {
 
 	var enc []byte
 
-	println(c)
 	if c == pdutext.ISO88595Type {
 		enc = pdutext.ISO88595(txt.Bytes()).Decode()
 	} else if c == pdutext.Latin1Type {

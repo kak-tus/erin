@@ -10,14 +10,14 @@ import (
 
 // Parser object
 type Parser struct {
-	logger  *zap.SugaredLogger
-	C       chan string
-	m       *sync.Mutex
-	toMove  map[string]bool
-	config  parserConfig
-	diskv   *diskv.Diskv
-	nanachi *nanachi.Client
-	dest    *nanachi.Destination
+	logger   *zap.SugaredLogger
+	C        chan string
+	m        *sync.Mutex
+	toMove   map[string]bool
+	config   parserConfig
+	diskv    *diskv.Diskv
+	nanachi  *nanachi.Client
+	producer *nanachi.SmartProducer
 }
 
 type parserConfig struct {
@@ -25,4 +25,5 @@ type parserConfig struct {
 	StorePath string
 	QueueName string
 	MaxShard  int32
+	URI       string
 }

@@ -7,6 +7,7 @@ founder:
 parser:
   movePath: '${ERIN_MOVE_PATH}'
   storePath: '${ERIN_STORE_PATH}'
+  uri: 'amqp://${ERIN_RABBITMQ_USER}:${ERIN_RABBITMQ_PASSWORD}@${ERIN_RABBITMQ_ADDR}/${ERIN_RABBITMQ_VHOST}'
   queueName: messages
   maxShard: 2
 

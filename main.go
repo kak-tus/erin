@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	fileLdr := fileconf.NewLoader("etc")
+	fileLdr := fileconf.NewLoader("etc", "/etc")
 
 	envLdr := envconf.NewLoader()
 
