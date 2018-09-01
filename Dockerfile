@@ -19,7 +19,8 @@ FROM alpine:3.8
 RUN \
   apk add --no-cache \
     libpcap \
-    su-exec
+    su-exec \
+    tzdata
 
 ENV \
   USER_UID=1000 \
