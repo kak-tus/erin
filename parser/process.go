@@ -17,11 +17,11 @@ import (
 	"github.com/streadway/amqp"
 )
 
-const sql = "INSERT INTO gate.kannel " +
+const sql = "INSERT INTO gate.smpp " +
 	"(dt_part,dt,connection_id,operation,type,status,sequence_id,message_id,phone,short_number,txt_id) " +
 	"VALUES (?,?,?,?,?,?,?,?,?,?,?);"
 
-const sqlText = "INSERT INTO gate.kannel_texts (dt_part,dt,id,txt) VALUES (?,?,?);"
+const sqlText = "INSERT INTO gate.smpp_texts (dt_part,id,txt) VALUES (?,?,?);"
 
 func (p *Parser) process(file string) {
 	p.logger.Debug(file)
@@ -96,7 +96,7 @@ func (p *Parser) parse(file string) {
 		data[2] = connectionID                                 // connection_id
 		data[3] = header.ID.String()                           // operation
 		data[4] = getMsgType(header, fields)                   // type
-		data[5] = header.Status.Error()                        // status
+		data[5] = header.Status                                // status
 		data[6] = header.Seq                                   // sequence_id
 
 		// message_id
@@ -130,14 +130,14 @@ func (p *Parser) parse(file string) {
 
 		// txt_id
 		if txt != nil {
-			data[10] = sha1.Sum([]byte(txt.(string)))
+			sha:=sha1.Sum([]byte(txt.(string)))
+			data[10] = string(sha[:])
 
-			dataText := make([]interface{}, 4)
+			dataText := make([]interface{}, 3)
 
 			dataText[0] = data[0]  // dt_part
-			dataText[1] = data[1]  // dt
-			dataText[2] = data[10] // id
-			dataText[3] = txt      // txt
+			dataText[1] = data[10] // id
+			dataText[2] = txt      // txt
 
 			body, err := message.Message{
 				Query: sqlText,

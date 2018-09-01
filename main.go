@@ -11,7 +11,6 @@ import (
 
 func init() {
 	fileLdr := fileconf.NewLoader("etc", "/etc")
-
 	envLdr := envconf.NewLoader()
 
 	appconf.RegisterLoader("file", fileLdr)
