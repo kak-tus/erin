@@ -14,8 +14,8 @@ adduser -h /home/user -G user -D -u $USER_UID user
 mkdir -p "$ERIN_TEMP_STORE_PATH"
 mkdir -p "$ERIN_OLD_MOVE_TO_PATH"
 
-chown -r user:user "$ERIN_TEMP_STORE_PATH"
-chown -r user:user "$ERIN_OLD_MOVE_TO_PATH"
+chown -R user:user "$ERIN_TEMP_STORE_PATH"
+chown -R user:user "$ERIN_OLD_MOVE_TO_PATH"
 
 su-exec user /usr/local/bin/erin &
 child=$!
