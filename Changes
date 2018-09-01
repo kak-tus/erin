@@ -1,3 +1,7 @@
+v0.3.0 2018-09-01
+  - Create work dirs.
+  - Renamed variables.
+
 v0.2.0 2018-09-01
   - Fix table structure.
 

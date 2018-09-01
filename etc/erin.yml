@@ -1,12 +1,12 @@
 ---
 founder:
-  dumpPath: '${ERIN_DUMP_PATH}'
+  dumpPath: '${ERIN_IN_DUMP_PATH}'
   pattern: 'dump*.pcap'
   regexp: '^dump_\d{1,10}_\d{8}_\d{6}.pcap$'
 
 parser:
-  movePath: '${ERIN_MOVE_PATH}'
-  storePath: '${ERIN_STORE_PATH}'
+  movePath: '${ERIN_OLD_MOVE_TO_PATH}'
+  storePath: '${ERIN_TEMP_STORE_PATH}'
   uri: 'amqp://${ERIN_RABBITMQ_USER}:${ERIN_RABBITMQ_PASSWORD}@${ERIN_RABBITMQ_ADDR}/${ERIN_RABBITMQ_VHOST}'
   queueName: messages
   maxShard: 2
