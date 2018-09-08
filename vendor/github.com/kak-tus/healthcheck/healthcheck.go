@@ -24,6 +24,7 @@ type server struct {
 type State int
 
 const (
+	_ = iota
 	// StatePassing - check in passing state
 	StatePassing State = iota
 	// StateWarning - check in warning state

@@ -102,8 +102,8 @@
 [[projects]]
   name = "github.com/kak-tus/healthcheck"
   packages = ["."]
-  revision = "e629063405d132806622154f9df3e40d08c1bcfd"
-  version = "v0.4.0"
+  revision = "5f3713b5d728cc0f1c0d5bbfbadb9bbf99e2576f"
+  version = "v0.5.0"
 
 [[projects]]
   name = "github.com/mitchellh/mapstructure"
