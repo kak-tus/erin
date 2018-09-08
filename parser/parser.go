@@ -32,13 +32,19 @@ func init() {
 				BasePath: cnf.StorePath,
 			})
 
+			loc, err := time.LoadLocation("UTC")
+			if err != nil {
+				return err
+			}
+
 			prs = &Parser{
-				logger: applog.GetLogger().Sugar(),
-				m:      &sync.Mutex{},
-				C:      make(chan string, 1000),
-				toMove: make(map[string]bool),
-				config: cnf,
-				diskv:  d,
+				logger:   applog.GetLogger().Sugar(),
+				m:        &sync.Mutex{},
+				C:        make(chan string, 1000),
+				toMove:   make(map[string]bool),
+				config:   cnf,
+				diskv:    d,
+				location: loc,
 			}
 
 			prs.logger.Info("Started parser")

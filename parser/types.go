@@ -2,6 +2,7 @@ package parser
 
 import (
 	"sync"
+	"time"
 
 	"git.aqq.me/go/nanachi"
 	"github.com/peterbourgon/diskv"
@@ -18,6 +19,7 @@ type Parser struct {
 	diskv    *diskv.Diskv
 	nanachi  *nanachi.Client
 	producer *nanachi.SmartProducer
+	location *time.Location
 }
 
 type parserConfig struct {

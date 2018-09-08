@@ -92,13 +92,15 @@ func (p *Parser) parse(file string) {
 		header := bdy.Header()
 		fields := bdy.Fields()
 
-		data[0] = meta.Timestamp.Format("2006-01-02")          // dt_part
-		data[1] = meta.Timestamp.Format("2006-01-02 15:04:05") // dt
-		data[2] = connectionID                                 // connection_id
-		data[3] = header.ID.String()                           // operation
-		data[4] = getMsgType(header, fields)                   // type
-		data[5] = header.Status                                // status
-		data[6] = header.Seq                                   // sequence_id
+		inGMT := meta.Timestamp.In(p.location)
+
+		data[0] = inGMT.Format("2006-01-02")          // dt_part
+		data[1] = inGMT.Format("2006-01-02 15:04:05") // dt
+		data[2] = connectionID                        // connection_id
+		data[3] = header.ID.String()                  // operation
+		data[4] = getMsgType(header, fields)          // type
+		data[5] = header.Status                       // status
+		data[6] = header.Seq                          // sequence_id
 
 		// message_id
 		messageID := fields["message_id"]
