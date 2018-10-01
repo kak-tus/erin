@@ -28,7 +28,7 @@ func (p *Parser) moveOld() {
 		noTime := name[0 : len(name)-21]
 
 		part1 := tm.Format("20060102")
-		part2 := tm.Format("150405")
+		part2 := tm.Format("150405") + ".pcap"
 
 		newDir := filepath.Join(p.config.MovePath, noTime, part1)
 
