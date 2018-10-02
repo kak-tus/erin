@@ -1,3 +1,6 @@
+v0.4.6 2018-10-03
+  - Close file handlers.
+
 v0.4.5 2018-10-01
   - Old files with ext.
 

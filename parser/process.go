@@ -24,7 +24,7 @@ const sql = "INSERT INTO gate.smpp " +
 const sqlText = "INSERT INTO gate.smpp_texts (dt_part,id,txt) VALUES (?,?,?);"
 
 func (p *Parser) process(file string) {
-	p.logger.Debug(file)
+	p.logger.Debug("Got file ", file)
 	p.toMove[file] = true
 
 	p.parse(file)
@@ -63,6 +63,8 @@ func (p *Parser) parse(file string) {
 		p.logger.Error(err)
 		return
 	}
+
+	defer hdl.Close()
 
 	src := gopacket.NewPacketSource(hdl, hdl.LinkType())
 	count := 0
@@ -186,6 +188,8 @@ func (p *Parser) parse(file string) {
 		p.logger.Error(err)
 		return
 	}
+
+	p.logger.Debug("Processing done ", file)
 }
 
 func getText(header *pdu.Header, fields pdufield.Map) interface{} {
