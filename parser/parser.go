@@ -56,9 +56,10 @@ func init() {
 	event.Stop.AddHandler(
 		func() error {
 			prs.logger.Info("Stop parser")
-			close(prs.C)
 			prs.m.Lock()
+
 			prs.nanachi.Close()
+			prs.logger.Info("Stopped parser")
 			return nil
 		},
 	)
@@ -128,4 +129,9 @@ func (p *Parser) Start() {
 	}
 
 	p.m.Unlock()
+}
+
+// Stop parser
+func (p *Parser) Stop() {
+	close(p.C)
 }

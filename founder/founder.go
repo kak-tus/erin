@@ -50,6 +50,10 @@ func init() {
 		func() error {
 			fnd.logger.Info("Stop founder")
 			fnd.watcher.Close()
+			fnd.m.Lock()
+
+			fnd.parser.Stop()
+			fnd.logger.Info("Stopped founder")
 			return nil
 		},
 	)
@@ -61,52 +65,48 @@ func GetFounder() *Founder {
 }
 
 // Start find files
-func (f *Founder) Start() error {
+func (f *Founder) Start() {
 	go f.parser.Start()
 
 	f.m.Lock()
 
 	f.findInitial()
 
-	go func() {
-	LOOP:
-		for {
-			select {
-			case ev, more := <-f.watcher.Events:
-				if !more {
-					break LOOP
-				}
-
-				if !(ev.Op == fsnotify.Create || ev.Op == fsnotify.Write) {
-					continue
-				}
-
-				matchPattern, err := filepath.Match(filepath.Join(f.config.DumpPath, f.config.Pattern), ev.Name)
-				if err != nil {
-					f.logger.Error(err)
-				}
-
-				if matchPattern && f.matchRegexp(ev.Name) {
-					f.parser.C <- ev.Name
-				}
-			case err, more := <-f.watcher.Errors:
-				if !more {
-					break LOOP
-				}
-
-				f.logger.Error(err)
-			}
-		}
-
-		f.m.Unlock()
-	}()
-
 	err := f.watcher.Add(f.config.DumpPath)
 	if err != nil {
-		return err
+		f.logger.Panic(err)
 	}
 
-	return nil
+LOOP:
+	for {
+		select {
+		case ev, more := <-f.watcher.Events:
+			if !more {
+				break LOOP
+			}
+
+			if !(ev.Op == fsnotify.Create || ev.Op == fsnotify.Write) {
+				continue
+			}
+
+			matchPattern, err := filepath.Match(filepath.Join(f.config.DumpPath, f.config.Pattern), ev.Name)
+			if err != nil {
+				f.logger.Error(err)
+			}
+
+			if matchPattern && f.matchRegexp(ev.Name) {
+				f.parser.C <- ev.Name
+			}
+		case err, more := <-f.watcher.Errors:
+			if !more {
+				break LOOP
+			}
+
+			f.logger.Error(err)
+		}
+	}
+
+	f.m.Unlock()
 }
 
 func (f *Founder) findInitial() {

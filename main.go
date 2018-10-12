@@ -21,19 +21,12 @@ func init() {
 }
 
 func main() {
-	var fnd *founder.Founder
-
 	launcher.Run(func() error {
 		healthcheck.Add("/healthcheck", func() (healthcheck.State, string) {
 			return healthcheck.StatePassing, "ok"
 		})
 
-		fnd = founder.GetFounder()
-
-		err := fnd.Start()
-		if err != nil {
-			return err
-		}
+		go founder.GetFounder().Start()
 
 		return nil
 	})
