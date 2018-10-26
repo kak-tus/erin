@@ -11,6 +11,9 @@ parser:
   uri: 'amqp://${ERIN_RABBITMQ_USER}:${ERIN_RABBITMQ_PASSWORD}@${ERIN_RABBITMQ_ADDR}/${ERIN_RABBITMQ_VHOST}'
   queueName: messages
   maxShard: 2
+  Redis:
+    Addrs: '${ERIN_REDIS_ADDRS}'
+    Password: '${ERIN_REDIS_PASSWORD}'
 
 healthcheck:
   listen: ':9000'

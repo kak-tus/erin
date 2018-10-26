@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"git.aqq.me/go/nanachi"
+	"git.aqq.me/go/retrier"
+	"github.com/go-redis/redis"
 	"github.com/peterbourgon/diskv"
 	"go.uber.org/zap"
 )
@@ -20,6 +22,8 @@ type Parser struct {
 	nanachi  *nanachi.Client
 	producer *nanachi.SmartProducer
 	location *time.Location
+	redisdb  *redis.ClusterClient
+	retrier  *retrier.Retrier
 }
 
 type parserConfig struct {
@@ -28,4 +32,14 @@ type parserConfig struct {
 	QueueName string
 	MaxShard  int32
 	URI       string
+	Redis     redisConfig
 }
+
+type redisConfig struct {
+	Addrs    string
+	Password string
+}
+
+const (
+	redisTTL = time.Hour * 24
+)

@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 	"git.aqq.me/go/app/event"
 	"git.aqq.me/go/nanachi"
 	"git.aqq.me/go/retrier"
+	"github.com/go-redis/redis"
 	"github.com/mitchellh/mapstructure"
 	"github.com/peterbourgon/diskv"
 	"github.com/streadway/amqp"
@@ -37,6 +39,13 @@ func init() {
 				return err
 			}
 
+			addrs := strings.Split(cnf.Redis.Addrs, ",")
+
+			redisdb := redis.NewClusterClient(&redis.ClusterOptions{
+				Addrs:    addrs,
+				Password: cnf.Redis.Password,
+			})
+
 			prs = &Parser{
 				logger:   applog.GetLogger().Sugar(),
 				m:        &sync.Mutex{},
@@ -45,6 +54,8 @@ func init() {
 				config:   cnf,
 				diskv:    d,
 				location: loc,
+				redisdb:  redisdb,
+				retrier:  retrier.New(retrier.Config{RetryPolicy: []time.Duration{time.Second * 5}}),
 			}
 
 			prs.logger.Info("Started parser")
@@ -59,6 +70,12 @@ func init() {
 			prs.m.Lock()
 
 			prs.nanachi.Close()
+
+			err := prs.redisdb.Close()
+			if err != nil {
+				return err
+			}
+
 			prs.logger.Info("Stopped parser")
 			return nil
 		},

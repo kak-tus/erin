@@ -35,7 +35,9 @@ ENV \
   ERIN_RABBITMQ_USER= \
   ERIN_RABBITMQ_PASSWORD= \
   ERIN_RABBITMQ_ADDR= \
-  ERIN_RABBITMQ_VHOST=
+  ERIN_RABBITMQ_VHOST= \
+  ERIN_REDIS_ADDRS= \
+  ERIN_REDIS_PASSWORD=
 
 COPY --from=build /go/bin/erin /usr/local/bin/erin
 COPY etc /etc/

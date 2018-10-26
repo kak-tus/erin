@@ -1,5 +1,7 @@
-v0.4.7 2018-10-12
+v0.4.7 2018-10-26
   - Better start/stop logic.
+  - Redis Cluster for store temporary data: migration period, only store data.
+  - New Redis configuration variables.
 
 v0.4.6 2018-10-03
   - Close file handlers.

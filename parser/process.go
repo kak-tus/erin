@@ -3,11 +3,13 @@ package parser
 import (
 	"bytes"
 	"crypto/sha1"
+	"fmt"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	"git.aqq.me/go/nanachi"
+	"git.aqq.me/go/retrier"
 	"github.com/fiorix/go-smpp/smpp/pdu"
 	"github.com/fiorix/go-smpp/smpp/pdu/pdufield"
 	"github.com/fiorix/go-smpp/smpp/pdu/pdutext"
@@ -36,6 +38,8 @@ func (p *Parser) parse(file string) {
 	_, name := filepath.Split(file)
 
 	offset := 0
+
+	rdKey := fmt.Sprintf("{erin_%s}", name)
 
 	if p.diskv.Has(name) {
 		raw := p.diskv.ReadString(name)
@@ -183,11 +187,21 @@ func (p *Parser) parse(file string) {
 		)
 	}
 
-	err = p.diskv.WriteString(name, strconv.Itoa(count))
-	if err != nil {
-		p.logger.Error(err)
-		return
-	}
+	p.retrier.Do(func() retrier.Status {
+		err = p.diskv.WriteString(name, strconv.Itoa(count))
+		if err != nil {
+			p.logger.Error(err)
+			return retrier.NeedRetry
+		}
+
+		status := p.redisdb.Set(rdKey, count, redisTTL)
+		if status.Err() != nil {
+			p.logger.Error(status.Err())
+			return retrier.NeedRetry
+		}
+
+		return retrier.Succeed
+	})
 
 	p.logger.Debug("Processing done ", file)
 }
