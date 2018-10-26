@@ -56,6 +56,21 @@
   version = "v1.4.7"
 
 [[projects]]
+  name = "github.com/go-redis/redis"
+  packages = [
+    ".",
+    "internal",
+    "internal/consistenthash",
+    "internal/hashtag",
+    "internal/pool",
+    "internal/proto",
+    "internal/singleflight",
+    "internal/util"
+  ]
+  revision = "b3d9bf10f6666b2ee5100a6f3f84f4caf3b4e37d"
+  version = "v6.14.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/google/btree"
   packages = ["."]
@@ -197,6 +212,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5a40da25da8ef7f6f58bd9ae9cfb7c602cf01e7dfbb8e481c517926a3b9b47da"
+  inputs-digest = "f4d7b5c0295e3210818c23aa64d6ea9d933ef213a28cbb38ad0694740d4383fd"
   solver-name = "gps-cdcl"
   solver-version = 1
