@@ -1,7 +1,12 @@
-v0.4.7 2018-10-26
+v0.4.7 unreleased
   - Better start/stop logic.
   - Redis Cluster for store temporary data: migration period, only store data.
   - New Redis configuration variables.
+  - Switch to Ami/Ruthie (Redis Cluster Streams based queues).
+    New configuration variables: ERIN_SHARDS_COUNT, ERIN_PENDING_BUFFER_SIZE,
+    ERIN_PIPE_BUFFER_SIZE.
+    Remove RabbitMQ configuration variables: ERIN_RABBITMQ_USER,
+    ERIN_RABBITMQ_PASSWORD, ERIN_RABBITMQ_ADDR, ERIN_RABBITMQ_VHOST.
 
 v0.4.6 2018-10-03
   - Close file handlers.

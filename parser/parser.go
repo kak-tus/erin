@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -9,12 +8,11 @@ import (
 	"git.aqq.me/go/app/appconf"
 	"git.aqq.me/go/app/applog"
 	"git.aqq.me/go/app/event"
-	"git.aqq.me/go/nanachi"
 	"git.aqq.me/go/retrier"
 	"github.com/go-redis/redis"
+	"github.com/kak-tus/ami"
 	"github.com/mitchellh/mapstructure"
 	"github.com/peterbourgon/diskv"
-	"github.com/streadway/amqp"
 )
 
 var prs *Parser
@@ -41,10 +39,26 @@ func init() {
 
 			addrs := strings.Split(cnf.Redis.Addrs, ",")
 
-			redisdb := redis.NewClusterClient(&redis.ClusterOptions{
+			ropt := &redis.ClusterOptions{
 				Addrs:    addrs,
 				Password: cnf.Redis.Password,
-			})
+			}
+
+			redisdb := redis.NewClusterClient(ropt)
+
+			pr, err := ami.NewProducer(
+				ami.ProducerOptions{
+					Name:              cnf.QueueName,
+					ShardsCount:       cnf.ShardsCount,
+					PendingBufferSize: cnf.PendingBufferSize,
+					PipeBufferSize:    cnf.PipeBufferSize,
+					PipePeriod:        time.Microsecond * 10,
+				},
+				ropt,
+			)
+			if err != nil {
+				return err
+			}
 
 			prs = &Parser{
 				logger:   applog.GetLogger().Sugar(),
@@ -56,6 +70,7 @@ func init() {
 				location: loc,
 				redisdb:  redisdb,
 				retrier:  retrier.New(retrier.Config{RetryPolicy: []time.Duration{time.Second * 5}}),
+				pr:       pr,
 			}
 
 			prs.logger.Info("Started parser")
@@ -69,7 +84,7 @@ func init() {
 			prs.logger.Info("Stop parser")
 			prs.m.Lock()
 
-			prs.nanachi.Close()
+			prs.pr.Close()
 
 			err := prs.redisdb.Close()
 			if err != nil {
@@ -89,50 +104,6 @@ func GetParser() *Parser {
 
 // Start parser
 func (p *Parser) Start() {
-	client, err := nanachi.NewClient(
-		nanachi.ClientConfig{
-			URI:       p.config.URI,
-			Heartbeat: time.Second * 15,
-			RetrierConfig: &retrier.Config{
-				RetryPolicy: []time.Duration{time.Second},
-			},
-		},
-	)
-
-	if err != nil {
-		p.logger.Error(err)
-		return
-	}
-
-	dest := &nanachi.Destination{
-		RoutingKey: p.config.QueueName,
-		MaxShard:   p.config.MaxShard,
-		Declare: func(ch *amqp.Channel) error {
-			for i := 0; i <= int(p.config.MaxShard); i++ {
-				shardName := fmt.Sprintf("%s.%d", p.config.QueueName, i)
-
-				_, err := ch.QueueDeclare(shardName, true, false, false, false, nil)
-				if err != nil {
-					panic(err)
-				}
-			}
-
-			return nil
-		},
-	}
-
-	producer := client.NewSmartProducer(
-		nanachi.SmartProducerConfig{
-			Destinations:      []*nanachi.Destination{dest},
-			Confirm:           true,
-			Mandatory:         true,
-			PendingBufferSize: 1000,
-		},
-	)
-
-	p.nanachi = client
-	p.producer = producer
-
 	p.m.Lock()
 
 	for {

@@ -8,15 +8,13 @@ import (
 	"strconv"
 	"strings"
 
-	"git.aqq.me/go/nanachi"
 	"git.aqq.me/go/retrier"
 	"github.com/fiorix/go-smpp/smpp/pdu"
 	"github.com/fiorix/go-smpp/smpp/pdu/pdufield"
 	"github.com/fiorix/go-smpp/smpp/pdu/pdutext"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
-	"github.com/kak-tus/corrie/message"
-	"github.com/streadway/amqp"
+	"github.com/kak-tus/ruthie/message"
 )
 
 const sql = "INSERT INTO gate.smpp " +
@@ -154,16 +152,7 @@ func (p *Parser) parse(file string) {
 			}.Encode()
 
 			if err == nil {
-				p.producer.Send(
-					nanachi.Publishing{
-						RoutingKey: p.config.QueueName,
-						Publishing: amqp.Publishing{
-							ContentType:  "text/plain",
-							Body:         body,
-							DeliveryMode: amqp.Persistent,
-						},
-					},
-				)
+				p.pr.Send(body)
 			}
 		}
 
@@ -175,32 +164,23 @@ func (p *Parser) parse(file string) {
 			continue
 		}
 
-		p.producer.Send(
-			nanachi.Publishing{
-				RoutingKey: p.config.QueueName,
-				Publishing: amqp.Publishing{
-					ContentType:  "text/plain",
-					Body:         body,
-					DeliveryMode: amqp.Persistent,
-				},
-			},
-		)
+		p.pr.Send(body)
 	}
 
-	p.retrier.Do(func() retrier.Status {
+	p.retrier.Do(func() *retrier.Error {
 		err = p.diskv.WriteString(name, strconv.Itoa(count))
 		if err != nil {
 			p.logger.Error(err)
-			return retrier.NeedRetry
+			return retrier.NewError(err, false)
 		}
 
 		status := p.redisdb.Set(rdKey, count, redisTTL)
 		if status.Err() != nil {
 			p.logger.Error(status.Err())
-			return retrier.NeedRetry
+			return retrier.NewError(err, false)
 		}
 
-		return retrier.Succeed
+		return nil
 	})
 
 	p.logger.Debug("Processing done ", file)

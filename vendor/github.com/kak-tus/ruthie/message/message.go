@@ -11,6 +11,6 @@ type Message struct {
 }
 
 // Encode message
-func (m Message) Encode() ([]byte, error) {
-	return decoder.Marshal(m)
+func (m Message) Encode() (string, error) {
+	return decoder.MarshalToString(m)
 }

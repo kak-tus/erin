@@ -14,22 +14,10 @@
   version = "v1.6.1"
 
 [[projects]]
-  name = "git.aqq.me/go/lrucache"
-  packages = ["."]
-  revision = "568b3e7eaaefa1c76169e37a7afac477a4be4c79"
-  version = "v1.1"
-
-[[projects]]
-  name = "git.aqq.me/go/nanachi"
-  packages = ["."]
-  revision = "6df092ca7f01c89cffad9ae1d7d15593d45911cb"
-  version = "v1.10.1"
-
-[[projects]]
   name = "git.aqq.me/go/retrier"
   packages = ["."]
-  revision = "1b9d7fbb0434cb939eda412cdb5f850fb6fccaf0"
-  version = "v1.10"
+  revision = "30bbe2f632db4a7a7157c94ede2cea6e98aaa261"
+  version = "v2.1.0"
 
 [[projects]]
   name = "github.com/BurntSushi/toml"
@@ -93,8 +81,8 @@
     "envconf",
     "fileconf"
   ]
-  revision = "c8135274101587ea808bd86ebb163939f978aa6b"
-  version = "v1.3"
+  revision = "2449044059ba4b98e13ce80d15162e85de2d03d0"
+  version = "v1.4.3"
 
 [[projects]]
   name = "github.com/iph0/merger"
@@ -109,16 +97,22 @@
   version = "v1.1.5"
 
 [[projects]]
-  name = "github.com/kak-tus/corrie"
-  packages = ["message"]
-  revision = "e482af246ce50c325a19ed3de3f9ee6603504871"
-  version = "0.2"
+  name = "github.com/kak-tus/ami"
+  packages = ["."]
+  revision = "52fbd9fd81268b4363ada45f66a85bb6d36c5030"
+  version = "v0.1.6"
 
 [[projects]]
   name = "github.com/kak-tus/healthcheck"
   packages = ["."]
   revision = "5f3713b5d728cc0f1c0d5bbfbadb9bbf99e2576f"
   version = "v0.5.0"
+
+[[projects]]
+  name = "github.com/kak-tus/ruthie"
+  packages = ["message"]
+  revision = "a76583055adc68eeba7ae15143578aaa5b0bf65b"
+  version = "v0.1.3"
 
 [[projects]]
   name = "github.com/mitchellh/mapstructure"
@@ -148,12 +142,6 @@
   name = "github.com/peterbourgon/diskv"
   packages = ["."]
   revision = "0646ccaebea1ed1539efcab30cae44019090093f"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/streadway/amqp"
-  packages = ["."]
-  revision = "70e15c650864f4fc47f5d3c82ea117285480895d"
 
 [[projects]]
   name = "go.uber.org/atomic"
@@ -212,6 +200,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f4d7b5c0295e3210818c23aa64d6ea9d933ef213a28cbb38ad0694740d4383fd"
+  inputs-digest = "fd46a348dba45c91279ff0c9e3c4381992019bf8c9b2edf3d1143450ff9523cf"
   solver-name = "gps-cdcl"
   solver-version = 1

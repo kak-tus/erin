@@ -26,20 +26,12 @@
 
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/fiorix/go-smpp"
+  name = "git.aqq.me/go/retrier"
+  version = "2.1.0"
 
 [[constraint]]
-  name = "github.com/google/gopacket"
-  version = "1.1.14"
-
-[[constraint]]
-  name = "github.com/peterbourgon/diskv"
-  revision = "0646ccaebea1ed1539efcab30cae44019090093f"
-
-[[constraint]]
-  name = "github.com/iph0/conf"
-  version = "1.4.3"
+  name = "github.com/go-redis/redis"
+  version = "6.14.2"
 
 [prune]
   go-tests = true
