@@ -10,7 +10,6 @@ import (
 	"git.aqq.me/go/app/event"
 	"github.com/fsnotify/fsnotify"
 	"github.com/kak-tus/erin/parser"
-	"github.com/mitchellh/mapstructure"
 )
 
 var fnd *Founder
@@ -21,7 +20,7 @@ func init() {
 			cnfMap := appconf.GetConfig()["founder"]
 
 			var cnf founderConfig
-			err := mapstructure.Decode(cnfMap, &cnf)
+			err := appconf.Decode(cnfMap, &cnf)
 			if err != nil {
 				return err
 			}

@@ -11,7 +11,6 @@ import (
 	"git.aqq.me/go/retrier"
 	"github.com/go-redis/redis"
 	"github.com/kak-tus/ami"
-	"github.com/mitchellh/mapstructure"
 	"github.com/peterbourgon/diskv"
 )
 
@@ -23,7 +22,7 @@ func init() {
 			cnfMap := appconf.GetConfig()["parser"]
 
 			var cnf parserConfig
-			err := mapstructure.Decode(cnfMap, &cnf)
+			err := appconf.Decode(cnfMap, &cnf)
 			if err != nil {
 				return err
 			}
