@@ -1,4 +1,4 @@
-v0.4.7 unreleased
+v0.4.7 2018-11-15
   - Better start/stop logic.
   - Redis Cluster for store temporary data: migration period, only store data.
   - New Redis configuration variables.
