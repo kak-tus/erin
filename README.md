@@ -1,3 +1,3 @@
-# erin
+# Erin
 
-Parse tcpdump files with SMPP packets and write it to Clickhouse.
+Parse tcpdump files with SMPP protocol and write it to Clickhouse.
