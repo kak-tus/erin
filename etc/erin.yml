@@ -7,7 +7,6 @@ founder:
 
 parser:
   movePath: '${ERIN_OLD_MOVE_TO_PATH}'
-  storePath: '${ERIN_TEMP_STORE_PATH}'
   queueName: ruthie
   redis:
     addrs: '${ERIN_REDIS_ADDRS}'

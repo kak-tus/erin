@@ -39,17 +39,23 @@ func (p *Parser) parse(file string) {
 
 	rdKey := fmt.Sprintf("{erin_%s}", name)
 
-	if p.diskv.Has(name) {
-		raw := p.diskv.ReadString(name)
+	p.retrier.Do(func() *retrier.Error {
+		status := p.redisdb.Get(rdKey)
+		if status.Err() != nil {
+			p.logger.Error(status.Err())
+			return retrier.NewError(status.Err(), false)
+		}
 
-		var err error
-
-		offset, err = strconv.Atoi(raw)
+		val, err := status.Int()
 		if err != nil {
 			p.logger.Error(err)
-			return
+			return nil
 		}
-	}
+
+		offset = val
+
+		return nil
+	})
 
 	// connectionName_connectionID_20060102_150405.pcap
 	noTime := name[0 : len(name)-21]
@@ -168,16 +174,10 @@ func (p *Parser) parse(file string) {
 	}
 
 	p.retrier.Do(func() *retrier.Error {
-		err = p.diskv.WriteString(name, strconv.Itoa(count))
-		if err != nil {
-			p.logger.Error(err)
-			return retrier.NewError(err, false)
-		}
-
 		status := p.redisdb.Set(rdKey, count, redisTTL)
 		if status.Err() != nil {
 			p.logger.Error(status.Err())
-			return retrier.NewError(err, false)
+			return retrier.NewError(status.Err(), false)
 		}
 
 		return nil

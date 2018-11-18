@@ -7,7 +7,6 @@ import (
 	"git.aqq.me/go/retrier"
 	"github.com/go-redis/redis"
 	"github.com/kak-tus/ami"
-	"github.com/peterbourgon/diskv"
 	"go.uber.org/zap"
 )
 
@@ -18,7 +17,6 @@ type Parser struct {
 	m        *sync.Mutex
 	toMove   map[string]bool
 	config   parserConfig
-	diskv    *diskv.Diskv
 	location *time.Location
 	redisdb  *redis.ClusterClient
 	retrier  *retrier.Retrier
@@ -27,7 +25,6 @@ type Parser struct {
 
 type parserConfig struct {
 	MovePath          string
-	StorePath         string
 	QueueName         string
 	Redis             redisConfig
 	ShardsCount       int8

@@ -34,10 +34,6 @@
   version = "1.1.14"
 
 [[constraint]]
-  name = "github.com/peterbourgon/diskv"
-  revision = "0646ccaebea1ed1539efcab30cae44019090093f"
-
-[[constraint]]
   name = "github.com/iph0/conf"
   version = "1.4.3"
 

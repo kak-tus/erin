@@ -59,12 +59,6 @@
   version = "v6.14.2"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/google/btree"
-  packages = ["."]
-  revision = "4030bb1f1f0c35b30ca7009e9ebd06849dd45306"
-
-[[projects]]
   name = "github.com/google/gopacket"
   packages = [
     ".",
@@ -133,17 +127,6 @@
   version = "1.0.1"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/petar/GoLLRB"
-  packages = ["llrb"]
-  revision = "53be0d36a84c2a886ca057d34b6aa4468df9ccb4"
-
-[[projects]]
-  name = "github.com/peterbourgon/diskv"
-  packages = ["."]
-  revision = "0646ccaebea1ed1539efcab30cae44019090093f"
-
-[[projects]]
   name = "go.uber.org/atomic"
   packages = ["."]
   revision = "1ea20fb1cbb1cc08cbd0d913a96dead89aa18289"
@@ -200,6 +183,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "99c06f1769de0efdf345af09c17a239f5e91dfb930901533097d454873c886f7"
+  inputs-digest = "7b04e65d385e35ac2fac9933af61148438701add0ca293579901f664403adfc5"
   solver-name = "gps-cdcl"
   solver-version = 1

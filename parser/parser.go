@@ -11,7 +11,6 @@ import (
 	"git.aqq.me/go/retrier"
 	"github.com/go-redis/redis"
 	"github.com/kak-tus/ami"
-	"github.com/peterbourgon/diskv"
 )
 
 var prs *Parser
@@ -26,10 +25,6 @@ func init() {
 			if err != nil {
 				return err
 			}
-
-			d := diskv.New(diskv.Options{
-				BasePath: cnf.StorePath,
-			})
 
 			loc, err := time.LoadLocation("UTC")
 			if err != nil {
@@ -65,7 +60,6 @@ func init() {
 				C:        make(chan string, 1000),
 				toMove:   make(map[string]bool),
 				config:   cnf,
-				diskv:    d,
 				location: loc,
 				redisdb:  redisdb,
 				retrier:  retrier.New(retrier.Config{RetryPolicy: []time.Duration{time.Second * 5}}),
