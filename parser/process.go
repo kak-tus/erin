@@ -12,6 +12,7 @@ import (
 	"github.com/fiorix/go-smpp/smpp/pdu"
 	"github.com/fiorix/go-smpp/smpp/pdu/pdufield"
 	"github.com/fiorix/go-smpp/smpp/pdu/pdutext"
+	"github.com/go-redis/redis"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
 	"github.com/kak-tus/ruthie/message"
@@ -40,16 +41,13 @@ func (p *Parser) parse(file string) {
 	rdKey := fmt.Sprintf("{erin_%s}", name)
 
 	p.retrier.Do(func() *retrier.Error {
-		status := p.redisdb.Get(rdKey)
-		if status.Err() != nil {
-			p.logger.Error(status.Err())
-			return retrier.NewError(status.Err(), false)
-		}
+		val, err := p.redisdb.Get(rdKey).Int()
 
-		val, err := status.Int()
-		if err != nil {
-			p.logger.Error(err)
+		if err == redis.Nil {
 			return nil
+		} else if err != nil {
+			p.logger.Error(err)
+			return retrier.NewError(err, false)
 		}
 
 		offset = val
