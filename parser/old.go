@@ -10,6 +10,13 @@ func (p *Parser) moveOld() {
 	now := time.Now()
 
 	for file := range p.toMove {
+		// Check if file moved already
+		_, err := os.Stat(file)
+		if err != nil && os.IsNotExist(err) {
+			delete(p.toMove, file)
+			continue
+		}
+
 		_, name := filepath.Split(file)
 
 		// connectionName_connectionID_20060102_150405.pcap
