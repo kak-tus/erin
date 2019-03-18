@@ -1,6 +1,7 @@
 package founder
 
 import (
+	"os"
 	"path/filepath"
 	"regexp"
 	"sync"
@@ -88,9 +89,21 @@ LOOP:
 				continue
 			}
 
+			st, err := os.Stat(ev.Name)
+			if err != nil {
+				f.logger.Error(err)
+				continue
+			}
+
+			// Dump file header has 4 bytes
+			if st.Size() < 4 {
+				continue
+			}
+
 			matchPattern, err := filepath.Match(filepath.Join(f.config.DumpPath, f.config.Pattern), ev.Name)
 			if err != nil {
 				f.logger.Error(err)
+				continue
 			}
 
 			if matchPattern && f.matchRegexp(ev.Name) {
