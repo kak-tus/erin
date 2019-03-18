@@ -65,8 +65,8 @@
     "layers",
     "pcap"
   ]
-  revision = "11c65f1ca9081dfea43b4f9643f5c155583b73ba"
-  version = "v1.1.14"
+  revision = "7f3fc6cbbb499248dca53da7fe3ed6c25a78d22f"
+  version = "v1.1.16"
 
 [[projects]]
   name = "github.com/iph0/conf"
@@ -183,6 +183,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7b04e65d385e35ac2fac9933af61148438701add0ca293579901f664403adfc5"
+  inputs-digest = "87648f92a126c24d09a4595cb1c69a0b19af4452db852ca9ca1108c3ebffdc5a"
   solver-name = "gps-cdcl"
   solver-version = 1
